@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriBot — IBM Granite Nutrition AI</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════ HEADER ═══════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-block">
+      <span class="logo-icon">🥗</span>
+      <div>
+        <h1 class="logo-title">NutriBot</h1>
+        <p class="logo-sub">Powered by <strong>IBM Granite</strong> on watsonx.ai</p>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="showSection('plan')">📋 Generate Plan</button>
+      <button class="nav-btn" onclick="showSection('chat')">💬 Ask NutriBot</button>
+      <button class="nav-btn" onclick="showSection('history')">📂 Saved Plans</button>
+      <button class="nav-btn" onclick="showSection('about')">ℹ️ About</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="main-container">
+
+  <!-- ── AGENT BADGE ── -->
+  <div class="agent-badge">
+    <span class="badge-dot"></span>
+    <span>Agentic AI — IBM Granite LLM Active</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — GENERATE PLAN
+  ══════════════════════════════════════════ -->
+  <section id="section-plan" class="section active">
+    <div class="section-header">
+      <h2>📋 Generate My Personalized Nutrition Plan</h2>
+      <p class="section-desc">
+        Fill in your profile below. The IBM Granite AI agent will create a tailored
+        nutrition plan and save it as a Markdown file.
+      </p>
+    </div>
+
+    <!-- Progress steps -->
+    <div class="steps-bar">
+      <div class="step active" id="step-dot-1"><span>1</span><label>Profile</label></div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-2"><span>2</span><label>Health</label></div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-3"><span>3</span><label>Goals</label></div>
+      <div class="step-line"></div>
+      <div class="step" id="step-dot-4"><span>4</span><label>Plan</label></div>
+    </div>
+
+    <!-- STEP 1 — Basic Profile -->
+    <div class="form-card" id="form-step-1">
+      <h3 class="card-title">👤 Step 1: Basic Profile</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="name">Full Name <span class="req">*</span></label>
+          <input type="text" id="name" placeholder="e.g. Priya Sharma" autocomplete="off" />
+        </div>
+        <div class="form-group">
+          <label for="age">Age <span class="req">*</span></label>
+          <input type="number" id="age" placeholder="e.g. 32" min="2" max="120" />
+        </div>
+        <div class="form-group">
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" placeholder="e.g. 65" min="10" max="300" />
+        </div>
+        <div class="form-group">
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" placeholder="e.g. 165" min="50" max="250" />
+        </div>
+        <div class="form-group">
+          <label for="city">City <span class="req">*</span></label>
+          <input type="text" id="city" placeholder="e.g. Mumbai" />
+        </div>
+        <div class="form-group">
+          <label for="country">Country <span class="req">*</span></label>
+          <input type="text" id="country" placeholder="e.g. India" />
+        </div>
+      </div>
+      <button class="btn-primary" onclick="goStep(2)">Continue →</button>
+    </div>
+
+    <!-- STEP 2 — Health Details -->
+    <div class="form-card hidden" id="form-step-2">
+      <h3 class="card-title">🏥 Step 2: Diet & Health Details</h3>
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>Diet Preference <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-card" id="rc-veg">
+              <input type="radio" name="diet" value="vegetarian" checked />
+              <span class="rc-icon">🥦</span>
+              <span class="rc-label">Vegetarian</span>
+            </label>
+            <label class="radio-card" id="rc-nonveg">
+              <input type="radio" name="diet" value="non-vegetarian" />
+              <span class="rc-icon">🍗</span>
+              <span class="rc-label">Non-Vegetarian</span>
+            </label>
+          </div>
+        </div>
+        <div class="form-group full-width">
+          <label for="medical_history">Medical History / Conditions</label>
+          <input type="text" id="medical_history" 
+            placeholder="e.g. Type 2 Diabetes, Hypertension (leave blank if none)" />
+          <p class="form-hint">Common: Diabetes, Blood Pressure, Thyroid, PCOS, Cholesterol</p>
+        </div>
+        <div class="form-group full-width">
+          <label for="allergies">Food Allergies / Intolerances</label>
+          <input type="text" id="allergies" placeholder="e.g. Lactose intolerant, Nut allergy" />
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(1)">← Back</button>
+        <button class="btn-primary" onclick="goStep(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Goals -->
+    <div class="form-card hidden" id="form-step-3">
+      <h3 class="card-title">🎯 Step 3: Health Goals</h3>
+      <div class="form-group full-width">
+        <label>Select Your Primary Goal</label>
+        <div class="goal-grid">
+          <button class="goal-btn active" onclick="selectGoal(this, 'Maintain a healthy lifestyle')">⚖️ Maintain Health</button>
+          <button class="goal-btn" onclick="selectGoal(this, 'Lose weight safely')">📉 Weight Loss</button>
+          <button class="goal-btn" onclick="selectGoal(this, 'Build muscle and increase protein intake')">💪 Muscle Gain</button>
+          <button class="goal-btn" onclick="selectGoal(this, 'Manage diabetes with low-GI diet')">🩸 Manage Diabetes</button>
+          <button class="goal-btn" onclick="selectGoal(this, 'Lower blood pressure with DASH diet')">❤️ Heart Health</button>
+          <button class="goal-btn" onclick="selectGoal(this, 'Boost energy and improve immunity')">⚡ Boost Energy</button>
+        </div>
+      </div>
+      <div class="form-group full-width" style="margin-top:16px">
+        <label for="custom_goal">Or describe your goal:</label>
+        <input type="text" id="custom_goal" placeholder="e.g. Improve gut health, manage PCOS..." />
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goStep(2)">← Back</button>
+        <button class="btn-primary btn-generate" onclick="generatePlan()">
+          🚀 Generate My Plan
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 4 — Results -->
+    <div class="form-card hidden" id="form-step-4">
+      <div id="loading-state" class="loading-block">
+        <div class="spinner"></div>
+        <p class="loading-text">IBM Granite AI is analysing your profile and crafting your personalized nutrition plan…</p>
+        <div class="loading-steps">
+          <span id="ls1" class="ls active">✓ Validating profile</span>
+          <span id="ls2" class="ls">⟳ Running safety guardrails</span>
+          <span id="ls3" class="ls">⟳ Generating plan with IBM Granite</span>
+          <span id="ls4" class="ls">⟳ Saving to Markdown file</span>
+        </div>
+      </div>
+
+      <div id="result-state" class="hidden">
+        <div class="result-header">
+          <h3>✅ Your Nutrition Plan is Ready!</h3>
+          <div class="result-actions">
+            <button class="btn-secondary" onclick="copyPlan()">📋 Copy</button>
+            <button class="btn-secondary" onclick="downloadPlan()">⬇️ Download .md</button>
+            <button class="btn-primary" onclick="goStep(1); resetForm()">🔄 New Plan</button>
+          </div>
+        </div>
+        <div class="filepath-bar" id="filepath-bar"></div>
+        <div id="plan-output" class="plan-output"></div>
+      </div>
+
+      <div id="error-state" class="hidden error-block">
+        <span class="error-icon">⚠️</span>
+        <p id="error-msg"></p>
+        <button class="btn-secondary" onclick="goStep(1)">← Try Again</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — CHAT / Q&A
+  ══════════════════════════════════════════ -->
+  <section id="section-chat" class="section hidden">
+    <div class="section-header">
+      <h2>💬 Ask NutriBot</h2>
+      <p class="section-desc">Get instant answers to your nutrition questions, powered by IBM Granite.</p>
+    </div>
+
+    <div class="chat-container">
+      <div class="chat-messages" id="chat-messages">
+        <!-- Welcome message -->
+        <div class="chat-msg bot">
+          <div class="msg-avatar">🤖</div>
+          <div class="msg-bubble">
+            <p>Hello! I'm <strong>NutriBot</strong>, your IBM Granite–powered nutrition assistant. 👋</p>
+            <p>Ask me anything about nutrition, healthy eating, managing medical conditions through diet, or specific foods. How can I help you today?</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick suggestion chips -->
+      <div class="quick-chips" id="quick-chips">
+        <span class="chip" onclick="askChip(this)">What foods help with diabetes?</span>
+        <span class="chip" onclick="askChip(this)">How much water should I drink?</span>
+        <span class="chip" onclick="askChip(this)">Best diet for weight loss?</span>
+        <span class="chip" onclick="askChip(this)">Foods to avoid with high blood pressure?</span>
+        <span class="chip" onclick="askChip(this)">What are good protein sources?</span>
+        <span class="chip" onclick="askChip(this)">How to improve gut health?</span>
+      </div>
+
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" class="chat-input"
+          placeholder="Type your nutrition question here…"
+          onkeydown="if(event.key==='Enter') sendQuery()" />
+        <button class="btn-send" onclick="sendQuery()">Send ↗</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — SAVED PLANS HISTORY
+  ══════════════════════════════════════════ -->
+  <section id="section-history" class="section hidden">
+    <div class="section-header">
+      <h2>📂 Saved Nutrition Plans</h2>
+      <p class="section-desc">Previously generated plans saved as Markdown files.</p>
+    </div>
+    <div id="plans-list" class="plans-list">
+      <p class="loading-text">Loading saved plans…</p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — ABOUT
+  ══════════════════════════════════════════ -->
+  <section id="section-about" class="section hidden">
+    <div class="section-header">
+      <h2>ℹ️ About NutriBot</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>🤖 IBM Granite LLM</h3>
+        <p>NutriBot uses <strong>ibm/granite-13b-instruct-v2</strong> via IBM watsonx.ai to generate personalized, evidence-based nutrition plans with context-aware reasoning.</p>
+      </div>
+      <div class="about-card">
+        <h3>🛡️ AI Ethics & Guardrails</h3>
+        <p>Every response passes through a multi-layer safety system: input validation, harmful pattern detection, output sanitization, and a mandatory medical disclaimer — following the HAM (Helpful, Accurate, Mindful) framework.</p>
+      </div>
+      <div class="about-card">
+        <h3>🔄 Agentic AI SDLC</h3>
+        <p>Built following all phases: Requirements → Design → Prompt Engineering → Generation → Validation → Output → Feedback. The AI agent autonomously orchestrates the entire pipeline.</p>
+      </div>
+      <div class="about-card">
+        <h3>💾 Markdown Export</h3>
+        <p>Each generated plan is automatically saved as a structured <code>.md</code> file with YAML front-matter, timestamps, and user metadata for future reference.</p>
+      </div>
+      <div class="about-card">
+        <h3>🌍 Culturally Aware</h3>
+        <p>Location and cultural context are factored into recommendations. Food suggestions are adapted to what is locally available and culturally appropriate.</p>
+      </div>
+      <div class="about-card">
+        <h3>⚕️ Medical Disclaimer</h3>
+        <p>NutriBot provides educational information only. It does <strong>not</strong> replace advice from a qualified healthcare professional or registered dietitian.</p>
+      </div>
+    </div>
+
+    <div class="sdlc-section">
+      <h3>📐 Agentic AI SDLC Phases</h3>
+      <div class="sdlc-flow">
+        <div class="sdlc-step">📋<br/><strong>Requirements</strong><br/>User profile, constraints, ethics</div>
+        <div class="sdlc-arrow">→</div>
+        <div class="sdlc-step">🎨<br/><strong>Design</strong><br/>Agent architecture, prompts</div>
+        <div class="sdlc-arrow">→</div>
+        <div class="sdlc-step">🔧<br/><strong>Development</strong><br/>Flask + Granite API</div>
+        <div class="sdlc-arrow">→</div>
+        <div class="sdlc-step">🛡️<br/><strong>Guardrails</strong><br/>HAM, safety filters</div>
+        <div class="sdlc-arrow">→</div>
+        <div class="sdlc-step">✅<br/><strong>Validation</strong><br/>Output quality check</div>
+        <div class="sdlc-arrow">→</div>
+        <div class="sdlc-step">📤<br/><strong>Output</strong><br/>Plan + .md save</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="site-footer">
+  <p>NutriBot © 2024 — IBM Granite Nutrition Agentic AI | Built with IBM watsonx.ai</p>
+  <p class="footer-disclaimer">⚕️ For informational purposes only. Always consult a qualified healthcare professional.</p>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

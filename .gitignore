@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment / Secrets
+.env
+*.env
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Flask
+instance/
+flask_session/
+
+# Tests
+.pytest_cache/
+.coverage
+htmlcov/
+
+# OS
+$RECYCLE.BIN/
+*.lnk
+
+# Temp
+tmp/
+temp/
+*.tmp
+*.bak
